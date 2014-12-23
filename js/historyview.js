@@ -480,9 +480,10 @@ define(['d3'], function () {
                     return typeof d.parent2 === 'string';
                 })
                 .call(fixCirclePosition)
-                .attr('r', 1)
-                .transition()
-                .duration(500)
+                //Commenting out this transition because it doesn't work well when running multiple commands in a script
+                //.attr('r', 1)
+                //.transition()
+                //.duration(1)
                 .attr('r', this.commitRadius);
 
         },

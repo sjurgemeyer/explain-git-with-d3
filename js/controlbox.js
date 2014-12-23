@@ -16,6 +16,29 @@ define(['d3'], function () {
     }
 
     ControlBox.prototype = {
+
+        commandFunc : function(cmd) {
+            var e = d3.event;
+            this._commandHistory.unshift(cmd);
+            this._tempCommand = '';
+            this._currentCommand = -1;
+            this.command(cmd);
+            e.stopImmediatePropagation();
+        },
+
+        /* bootstrap functions */
+        createBranches : function() {
+
+            this.commandFunc('git commit');
+            this.commandFunc('git checkout -b feature1');
+            this.commandFunc('git checkout -b feature2');
+            this.commandFunc('git commit');
+            this.commandFunc('git commit');
+            this.commandFunc('git checkout feature1');
+            this.commandFunc('git commit');
+            this.commandFunc('git commit');
+        },
+
         render: function (container) {
             var cBox = this,
                 cBoxContainer, log, input;
@@ -43,7 +66,11 @@ define(['d3'], function () {
                     cBox._commandHistory.unshift(this.value);
                     cBox._tempCommand = '';
                     cBox._currentCommand = -1;
-                    cBox.command(this.value);
+                    if (typeof cBox[this.value] === 'function') {
+                        cBox[this.value]();
+                    } else {
+                        cBox.command(this.value);
+                    }
                     this.value = '';
                     e.stopImmediatePropagation();
                     break;
@@ -73,6 +100,13 @@ define(['d3'], function () {
                     }
                     e.stopImmediatePropagation();
                     break;
+                case 76:
+                    if (e.ctrlKey) {
+                      var thelog = document.querySelector(".log")
+                      while (thelog.firstChild) {
+                          thelog.removeChild(thelog.firstChild);
+                      }
+                    }
                 }
             });
 
